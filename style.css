@@ -1,7 +1,6 @@
 * {
     margin: 0px;
     padding: 0px;
-    
 }
 
 .calculator {
@@ -62,21 +61,21 @@ button {
     flex-grow: 1;
 }
 
-#clear {
+#clearButton {
     flex-grow: 1;
     
 }
 
-#clear button {
+#clearButton button {
     width: 90%;
     border-radius: 90%;
 }
 
-#zero {
+#zeroButton {
     flex-grow: 1;
 }
 
-#zero button {
+#zeroButton button {
     width: 90%;
     border-radius: 90%;
 }
