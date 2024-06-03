@@ -1,6 +1,7 @@
 let num1 = "";
 let num2 = "";
 let operand = "";
+let previousResult = "";
 
 let add = function(x, y){
     return x + y;
@@ -21,17 +22,21 @@ let divide = function(x, y){
 let operate = function (operator, x, y){
     switch(operator){
         case "+":
-            add(x,y);
-            break;
+            return add(x,y);
+            
         case "-":
-            subtract(x,y);
-            break;
-        case "*":
-            multiply(x,y);
-            break;
+            return subtract(x,y);
+            
+        case "X":
+            return multiply(x,y);
+            
         case "/":
-            divide(x,y);
-            break;
+            if (y === 0){
+                updateDisplay("You can't divide by zero >:P");
+                return;
+            }
+            return divide(x,y);
+            
     }
 }
 
@@ -39,7 +44,7 @@ let updateDisplay = (buttonText) => {
     display.textContent = buttonText;
 }
 
-let display = document.getElementsByClassName("display");
+let display = document.querySelector(".display");
 
 let buttonNodeList = document.querySelectorAll(".button")
 
@@ -47,29 +52,69 @@ let buttonNodeList = document.querySelectorAll(".button")
 buttonNodeList.forEach(buttonNode => {
     buttonNode.addEventListener('click', () =>{
         let buttonText = buttonNode.firstChild.textContent
-        if (buttonText != "+" && buttonText != "-" &&  buttonText != "X" &&  buttonText != "÷" &&  buttonText != "AC"){
-            if (!operand){
+        if (!isNaN(buttonText) || buttonText === "."){
+            if (operand === ""){
+                if (buttonText === "." && num1.includes(".")){
+                    return;
+                }
                 num1 += buttonText;
-                console.log(num1);
+                updateDisplay(num1);
             }
             else {
+                if (buttonText === "." && num2.includes(".")){
+                    return
+                }
                 num2 += buttonText;
-                console.log(num2);
+                updateDisplay(`${num1} ${operand} ${num2}`);
             }
+            
         }
         else if (buttonText === "AC"){ 
             //reset calculator
             num1 = "";
             num2 = "";
             operand = "";
+            display.textContent = "";
+            previousResult = "";
+            updateDisplay("");
         }
 
         else if (buttonText === "="){ //preform operation
-            operate(operand, parseFloat(num1), parseFloat(num2));
+            if (num1 !== "" && num2 !== "" && operand !== ""){
+                let result = operate(operand, parseFloat(num1), parseFloat(num2));
+                result = parseFloat(result.toFixed(1));
+                updateDisplay(result);
+
+                previousResult = result.toString();
+
+                num1 = previousResult;
+                num2 = "";
+                operand = "";
+            }
+            
+        }
+        else if (buttonText === "←"){
+            if (operand === ""){
+                num1 = num1.slice(0, -1);
+                updateDisplay(num1);
+            }
+            else if (num2 === ""){
+                operand = "";
+                updateDisplay(num1);
+            }
+            else {
+                num2 = num2.slice(0, -1);
+                updateDisplay(`${num1} ${operand} ${num2}`)
+            }
         }
         else {
-            operand = buttonText;
-            console.log(operand);
+            if (num1 !== ""){
+                operand = buttonText;
+                updateDisplay(`${num1} ${operand}`);
+            }
+            else {
+                console.log("Invalid input: operand cannot be first")
+            }
         }
         
     });

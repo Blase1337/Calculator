@@ -79,3 +79,7 @@ button {
     width: 90%;
     border-radius: 90%;
 }
+
+.orange {
+    background: orange;
+}
